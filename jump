@@ -2,10 +2,20 @@
 
 if [ ! -f "$HOME/.jump.list" ]; then
 	cd $HOME
-	echo 'Local server:127.0.0.1:22' > .jump.list;
+	echo '# You have to add/edit your ssh connections in this file. with below structure:' > .jump.list
+	echo '# Just add your connections and save to continue' >> .jump.list
+	echo '#Alias:IP:PORT' >> .jump.list
+	echo '# For example :' >> .jump.list
+	echo 'Local server:127.0.0.1:22' >> .jump.list
+	sensible-editor .jump.list
 fi
+echo "NOTICE :"
+echo "*** You can modify your ssh connections in '$HOME/.jump.list'";
+echo 
 
-servers=$(cat ~/.jump.list | awk -F':' '{print "\"" $2 "\" " "\"" $1 "\" OFF "}')
+jumplist=$(cat ~/.jump.list | grep -v '^#');
+
+servers=$(echo $jumplist | awk -F':' '{print "\"" $2 "\" " "\"" $1 "\" OFF "}')
 
 dlg="whiptail --title \"Jump ssh manager \" --radiolist \"Choose Destination\" 20 50 10 "
 dlg="$dlg $servers 3>&1 1>&2 2>&3"
@@ -20,7 +30,7 @@ if [ $exitstatus = 0 ]; then
 	        echo "=================================================="
 	        exit
 	fi
-	server=$(cat ~/.jump.list | grep $selected)
+	server=$(echo $jumplist | grep $selected)
 else
 	echo "=================================================="
 	echo "Created by S.M.Hosseini - mindfs.ir. just smile :)"
