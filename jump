@@ -1,0 +1,46 @@
+#!/bin/bash
+
+if [ ! -f "$HOME/.jump.list" ]; then
+	cd $HOME
+	echo 'Local server:127.0.0.1:22' > .jump.list;
+fi
+
+servers=$(cat ~/.jump.list | awk -F':' '{print "\"" $2 "\" " "\"" $1 "\" OFF "}')
+
+dlg="whiptail --title \"Jump ssh manager \" --radiolist \"Choose Destination\" 20 50 10 "
+dlg="$dlg $servers 3>&1 1>&2 2>&3"
+selected=$(eval $dlg)
+
+exitstatus=$?
+if [ $exitstatus = 0 ]; then
+	if [ -z $selected ]; then
+        	echo "=================================================="
+	        echo "Created by S.M.Hosseini - mindfs.ir. just smile :)"
+	        echo "You MUST select a server."
+	        echo "=================================================="
+	        exit
+	fi
+	server=$(cat ~/.jump.list | grep $selected)
+else
+	echo "=================================================="
+	echo "Created by S.M.Hosseini - mindfs.ir. just smile :)"
+	echo "bye."
+	echo "=================================================="
+	exit
+fi
+
+user=$1
+if [ -z $user]; then
+        user='root'
+fi
+
+remote_name=$(echo $server | awk -F':' '{print $1}')
+remote_ip=$(echo $server | awk -F':' '{print $2}')
+remote_port=$(echo $server | awk -F':' '{print $3}')
+
+echo "=================================================="
+echo "Created by S.M.Hosseini - mindfs.ir. just smile :)"
+echo "=================================================="
+echo "Connecting to $remote_name ($remote_ip) on port $remote_port as $user ...."
+echo ""
+eval "ssh $user@$remote_ip -p$remote_port"
