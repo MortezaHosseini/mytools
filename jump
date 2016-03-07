@@ -13,9 +13,7 @@ echo "NOTICE :"
 echo "*** You can modify your ssh connections in '$HOME/.jump.list'";
 echo 
 
-jumplist=$(cat ~/.jump.list | grep -v '^#');
-
-servers=$(echo $jumplist | awk -F':' '{print "\"" $2 "\" " "\"" $1 "\" OFF "}')
+servers=$(cat $HOME/.jump.list | grep -v '^#' | awk -F':' '{print "\"" $2 "\" " "\"" $1 "\" OFF "}')
 
 dlg="whiptail --title \"Jump ssh manager \" --radiolist \"Choose Destination\" 20 50 10 "
 dlg="$dlg $servers 3>&1 1>&2 2>&3"
@@ -30,7 +28,7 @@ if [ $exitstatus = 0 ]; then
 	        echo "=================================================="
 	        exit
 	fi
-	server=$(echo $jumplist | grep $selected)
+	server=$(cat $HOME/.jump.list | grep -v '^#' | grep $selected)
 else
 	echo "=================================================="
 	echo "Created by S.M.Hosseini - mindfs.ir. just smile :)"
