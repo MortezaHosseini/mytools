@@ -38,7 +38,7 @@ else
 fi
 
 user=$1
-if [ -z $user]; then
+if [ -z $user ]; then
         user='root'
 fi
 
