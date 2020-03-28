@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Pre-commit Bash-script for run tests of Elixir projects before `git commit`
+# By: Morteza Hosseini (hosseini8848@gmail.com)
+
+MSG_PRFX="pre-commit:"
+
+HAS_TEST=$(ls -1 | egrep "^test$" | wc -l)
+
+if [[ $HAS_TEST -eq 0 ]]
+then
+    echo "$MSG_PRFX Test directory not exists."
+    exit 0
+else
+    echo "$MSG_PRFX I'm gonna run the tests..."
+fi
+
+
+mix test > /dev/null
+
+if [[ $? -gt 0 ]]
+then
+  echo "$MSG_PRFX Test failed. Run \`mix test\` to see what happened."
+  exit 1
+fi
+  echo "$MSG_PRFX Tests passed."
+exit 0
